@@ -1,5 +1,5 @@
 {
-  "name": "@gnosis.pm/mock-contract",
+  "name": "@safe-global/mock-contract",
   "version": "4.0.0",
   "description": "Simple Solidity contract to mock dependent contracts in truffle tests.",
   "main": "truffle-config.js",
@@ -20,13 +20,12 @@
     "stub",
     "contract"
   ],
-  "homepage": "https://github.com/fleupold/mock-contract",
-  "author": "Felix Leupold",
-  "license": "ISC",
+  "homepage": "https://github.com/safe-global/mock-contract",
+  "author": "Safe Developers",
+  "license": "MIT",
   "devDependencies": {
     "run-with-testrpc": "^0.3.0",
     "truffle": "^5.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
