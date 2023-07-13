@@ -30,6 +30,7 @@ interface MockInterface {
 	function givenMethodReturnBool(bytes calldata method, bool response) external;
 	function givenMethodReturnUint(bytes calldata method, uint response) external;
 	function givenMethodReturnAddress(bytes calldata method, address response) external;
+	function givenMethodReturnBytes32(bytes calldata method, bytes32 response) external;
 
 	function givenMethodRevert(bytes calldata method) external;
 	function givenMethodRevertWithMessage(bytes calldata method, string calldata message) external;
@@ -46,6 +47,7 @@ interface MockInterface {
 	function givenCalldataReturnBool(bytes calldata call, bool response) external;
 	function givenCalldataReturnUint(bytes calldata call, uint response) external;
 	function givenCalldataReturnAddress(bytes calldata call, address response) external;
+	function givenCalldataReturnBytes32(bytes calldata call, bytes32 response) external;
 
 	function givenCalldataRevert(bytes calldata call) external;
 	function givenCalldataRevertWithMessage(bytes calldata call, string calldata message) external;
@@ -184,6 +186,10 @@ contract MockContract is MockInterface {
 		_givenCalldataReturn(call, uintToBytes(uint(uint160(response))));
 	}
 
+	function givenCalldataReturnBytes32(bytes calldata call, bytes32 response) override external {
+		_givenCalldataReturn(call, abi.encode(response));
+	}
+
 	function _givenMethodReturn(bytes memory call, bytes memory response) private {
 		bytes4 method = bytesToBytes4(call);
 		methodIdMockTypes[method] = MockType.Return;
@@ -206,6 +212,10 @@ contract MockContract is MockInterface {
 
 	function givenMethodReturnAddress(bytes calldata call, address response) override external {
 		_givenMethodReturn(call, uintToBytes(uint(uint160(response))));
+	}
+
+	function givenMethodReturnBytes32(bytes calldata call, bytes32 response) override external {
+		_givenMethodReturn(call, abi.encode(response));
 	}
 
 	function givenCalldataRevert(bytes calldata call) override external {
