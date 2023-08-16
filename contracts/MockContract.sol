@@ -386,4 +386,21 @@ contract MockContract is MockInterface {
 			return(add(0x20, result), mload(result))
 		}
 	}
+
+	function executeCallViaMock(
+        address payable to,
+        uint256 value,
+        bytes memory data,
+        uint256 gas
+    ) external returns (bool success, bytes memory response) {
+        (success, response) = to.call{ value: value, gas: gas }(data);
+    }
+
+    function executeDelegatecallViaMock(
+        address payable to,
+        bytes memory data,
+        uint256 gas
+    ) external returns (bool success, bytes memory response) {
+        (success, response) = to.delegatecall{ gas: gas }(data);
+    }
 }
