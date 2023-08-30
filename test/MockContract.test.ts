@@ -3,7 +3,7 @@ import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { deployContractUnderTest, deployMockContractFixture } from "./fixtures";
 import { expect } from "chai";
-import { ZeroAddress, Fragment, FunctionFragment } from "ethers";
+import { ZeroAddress, FunctionFragment, MaxUint256 } from "ethers";
 import { ComplexInterface, MockContract } from "../types";
 
 describe("MockContract", function () {
@@ -446,4 +446,25 @@ describe("MockContract", function () {
     });
   });
 
-})
+  describe("execute calls via mocks", function () {
+    it("should execute call via mock", async function () {
+      const { mockContract } = await setupTests();
+
+      const otherMockContract = await ethers.deployContract("MockContract");
+
+      await mockContract.executeCallViaMock(otherMockContract.target, 0, "0x12345678", MaxUint256);
+      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(1);
+      expect(await otherMockContract.invocationCount()).to.be.equal(1);
+    });
+
+    it("should execute delegatecall via mock", async function () {
+      const { mockContract } = await setupTests();
+      const otherMockContract = await ethers.deployContract("MockContract");
+
+      await mockContract.executeDelegatecallViaMock(otherMockContract.target, "0x12345678", MaxUint256);
+
+      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(0);
+      expect(await otherMockContract.invocationCount()).to.be.equal(0);
+    });
+  });
+});
