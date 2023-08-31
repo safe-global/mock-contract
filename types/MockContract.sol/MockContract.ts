@@ -31,7 +31,8 @@ export interface MockContractInterface extends Interface {
       | "MOCKS_LIST_END_HASH"
       | "MOCKS_LIST_START"
       | "SENTINEL_ANY_MOCKS"
-      | "deployer"
+      | "allowCallViaMock"
+      | "allowDelegatecallViaMock"
       | "executeCallViaMock"
       | "executeDelegatecallViaMock"
       | "givenAnyReturn"
@@ -84,7 +85,14 @@ export interface MockContractInterface extends Interface {
     functionFragment: "SENTINEL_ANY_MOCKS",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "deployer", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "allowCallViaMock",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allowDelegatecallViaMock",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "executeCallViaMock",
     values: [AddressLike, BigNumberish, BytesLike, BigNumberish]
@@ -223,7 +231,14 @@ export interface MockContractInterface extends Interface {
     functionFragment: "SENTINEL_ANY_MOCKS",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "deployer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "allowCallViaMock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "allowDelegatecallViaMock",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "executeCallViaMock",
     data: BytesLike
@@ -396,7 +411,9 @@ export interface MockContract extends BaseContract {
 
   SENTINEL_ANY_MOCKS: TypedContractMethod<[], [string], "view">;
 
-  deployer: TypedContractMethod<[], [string], "view">;
+  allowCallViaMock: TypedContractMethod<[], [boolean], "view">;
+
+  allowDelegatecallViaMock: TypedContractMethod<[], [boolean], "view">;
 
   executeCallViaMock: TypedContractMethod<
     [to: AddressLike, value: BigNumberish, data: BytesLike, gas: BigNumberish],
@@ -582,8 +599,11 @@ export interface MockContract extends BaseContract {
     nameOrSignature: "SENTINEL_ANY_MOCKS"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "deployer"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "allowCallViaMock"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "allowDelegatecallViaMock"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "executeCallViaMock"
   ): TypedContractMethod<

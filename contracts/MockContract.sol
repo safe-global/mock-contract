@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity >=0.7.0 <0.9.0;
-
 interface MockInterface {
 	/**
 	 * @dev After calling this method, the mock will return `response` when it is called
@@ -106,12 +105,13 @@ contract MockContract is MockInterface {
 	string fallbackRevertMessage;
 	uint invocations;
 	uint resetCount;
-	address public immutable deployer;
-
-	constructor() {
+	bool public immutable allowCallViaMock;
+	bool public immutable allowDelegatecallViaMock;
+    constructor(bool _allowCallViaMock, bool _allowDelegatecallViaMock) {
 		calldataMocks[MOCKS_LIST_START] = MOCKS_LIST_END;
 		methodIdMocks[SENTINEL_ANY_MOCKS] = SENTINEL_ANY_MOCKS;
-		deployer = msg.sender;
+		allowCallViaMock = _allowCallViaMock;
+		allowDelegatecallViaMock = _allowDelegatecallViaMock;
 	}
 
 	function trackCalldataMock(bytes memory call) private {
@@ -405,13 +405,12 @@ contract MockContract is MockInterface {
 		bytes memory data,
 		uint256 gas
 	) external returns (bool success, bytes memory response) {
-		if(msg.sender != deployer) revert("Only deployer can call executeCallViaMock");
-		(success, response) = to.call{ value: value, gas: gas }(data);
+		if(allowCallViaMock) (success, response) = to.call{ value: value, gas: gas }(data);
+		else fallbackImpl();
 	}
 
 	/**
-	 * @notice This function is used to execute delegatecall to a contract via the mock contract. Only deployer can call this function to avoid calls being executed unintentionally
-	 *		 when a function with same selector is called as this.
+	 * @notice This function is used to execute delegatecall to a contract via the mock contract.
 	 * @param to Address of the contract to execute delegatecall
 	 * @param data Input bytes to send
 	 * @param gas Amount to gas to send
@@ -423,7 +422,7 @@ contract MockContract is MockInterface {
 		bytes memory data,
 		uint256 gas
 	) external returns (bool success, bytes memory response) {
-		if(msg.sender != deployer) revert("Only deployer can call executeDelegatecallViaMock");
-		(success, response) = to.delegatecall{ gas: gas }(data);
+		if(allowDelegatecallViaMock)  (success, response) = to.delegatecall{ gas: gas }(data);
+		else fallbackImpl();
 	}
 }

@@ -449,29 +449,29 @@ describe("MockContract", function () {
   describe("execute calls via mocks", function () {
 
     it("should not allow non-deployer to execute delegatecall", async function () {
-      const { mockContract , signers} = await setupTests();
-      const otherMockContract = await ethers.deployContract("MockContract");
+      const { signers} = await setupTests();
+      const otherMockContract = await ethers.deployContract("MockContract", [false, false]);
 
-      await  expect(mockContract.connect(signers[1]).executeDelegatecallViaMock(otherMockContract.target, "0x12345678", MaxUint256)).to.be.revertedWith("Only deployer can call executeDelegatecallViaMock");
+      expect(await otherMockContract.executeDelegatecallViaMock(otherMockContract.target, "0x12345678", MaxUint256));
 
-      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(0);
-      expect(await otherMockContract.invocationCount()).to.be.equal(0);
+      expect(await otherMockContract.invocationCountForMethod("0x8bc80f45")).to.be.equal(1);
+      expect(await otherMockContract.invocationCount()).to.be.equal(1);
     });
 
     it("should not allow non-deployer to execute call", async function () {
-      const { mockContract , signers} = await setupTests();
-      const otherMockContract = await ethers.deployContract("MockContract");
+      const { signers} = await setupTests();
+      const otherMockContract = await ethers.deployContract("MockContract", [false, false]);
 
-      await  expect(mockContract.connect(signers[1]).executeCallViaMock(otherMockContract.target,0, "0x12345678", MaxUint256)).to.be.revertedWith("Only deployer can call executeCallViaMock");
+      expect( await otherMockContract.executeCallViaMock(signers[0], 0, "0x12345678", MaxUint256));
 
-      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(0);
-      expect(await otherMockContract.invocationCount()).to.be.equal(0);
+      expect(await otherMockContract.invocationCountForMethod("0x7dd15363")).to.be.equal(1);
+      expect(await otherMockContract.invocationCount()).to.be.equal(1);
     });
 
     it("should execute call via mock", async function () {
       const { mockContract } = await setupTests();
 
-      const otherMockContract = await ethers.deployContract("MockContract");
+      const otherMockContract = await ethers.deployContract("MockContract", [true, true]);
 
       await mockContract.executeCallViaMock(otherMockContract.target, 0, "0x12345678", MaxUint256);
       expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(1);
@@ -480,7 +480,7 @@ describe("MockContract", function () {
 
     it("should execute delegatecall via mock", async function () {
       const { mockContract } = await setupTests();
-      const otherMockContract = await ethers.deployContract("MockContract");
+      const otherMockContract = await ethers.deployContract("MockContract", [true, true]);
 
       await mockContract.executeDelegatecallViaMock(otherMockContract.target, "0x12345678", MaxUint256);
 

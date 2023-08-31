@@ -10,7 +10,7 @@ import { AddressLike } from "ethers";
 
 async function deployMockContractFixture(signer: SignerWithAddress): Promise<{ mockContract: MockContract }> {
   const mockContractFactory = await ethers.getContractFactory("MockContract")
-  const mockContract = await mockContractFactory.connect(signer).deploy();
+  const mockContract = await mockContractFactory.connect(signer).deploy(true, true);
   await mockContract.waitForDeployment();
 
   return { mockContract };
