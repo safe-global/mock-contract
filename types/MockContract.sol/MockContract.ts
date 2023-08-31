@@ -31,6 +31,7 @@ export interface MockContractInterface extends Interface {
       | "MOCKS_LIST_END_HASH"
       | "MOCKS_LIST_START"
       | "SENTINEL_ANY_MOCKS"
+      | "deployer"
       | "executeCallViaMock"
       | "executeDelegatecallViaMock"
       | "givenAnyReturn"
@@ -83,6 +84,7 @@ export interface MockContractInterface extends Interface {
     functionFragment: "SENTINEL_ANY_MOCKS",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "deployer", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "executeCallViaMock",
     values: [AddressLike, BigNumberish, BytesLike, BigNumberish]
@@ -221,6 +223,7 @@ export interface MockContractInterface extends Interface {
     functionFragment: "SENTINEL_ANY_MOCKS",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "deployer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executeCallViaMock",
     data: BytesLike
@@ -392,6 +395,8 @@ export interface MockContract extends BaseContract {
   MOCKS_LIST_START: TypedContractMethod<[], [string], "view">;
 
   SENTINEL_ANY_MOCKS: TypedContractMethod<[], [string], "view">;
+
+  deployer: TypedContractMethod<[], [string], "view">;
 
   executeCallViaMock: TypedContractMethod<
     [to: AddressLike, value: BigNumberish, data: BytesLike, gas: BigNumberish],
@@ -575,6 +580,9 @@ export interface MockContract extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "SENTINEL_ANY_MOCKS"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "deployer"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "executeCallViaMock"
