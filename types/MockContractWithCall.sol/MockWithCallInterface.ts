@@ -23,14 +23,11 @@ import type {
   Listener,
 } from "ethers";
 
-export interface MockContractInterface extends Interface {
+export interface MockWithCallInterfaceInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "DEFAULT_FALLBACK_VALUE"
-      | "MOCKS_LIST_END"
-      | "MOCKS_LIST_END_HASH"
-      | "MOCKS_LIST_START"
-      | "SENTINEL_ANY_MOCKS"
+      | "executeCallViaMock"
+      | "executeDelegatecallViaMock"
       | "givenAnyReturn"
       | "givenAnyReturnAddress"
       | "givenAnyReturnBool"
@@ -58,28 +55,15 @@ export interface MockContractInterface extends Interface {
       | "invocationCountForCalldata"
       | "invocationCountForMethod"
       | "reset"
-      | "updateInvocationCount"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "DEFAULT_FALLBACK_VALUE",
-    values?: undefined
+    functionFragment: "executeCallViaMock",
+    values: [AddressLike, BigNumberish, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "MOCKS_LIST_END",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "MOCKS_LIST_END_HASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "MOCKS_LIST_START",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SENTINEL_ANY_MOCKS",
-    values?: undefined
+    functionFragment: "executeDelegatecallViaMock",
+    values: [AddressLike, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "givenAnyReturn",
@@ -186,29 +170,13 @@ export interface MockContractInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "reset", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "updateInvocationCount",
-    values: [BytesLike, BytesLike]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "DEFAULT_FALLBACK_VALUE",
+    functionFragment: "executeCallViaMock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "MOCKS_LIST_END",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "MOCKS_LIST_END_HASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "MOCKS_LIST_START",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SENTINEL_ANY_MOCKS",
+    functionFragment: "executeDelegatecallViaMock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -316,17 +284,13 @@ export interface MockContractInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "reset", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateInvocationCount",
-    data: BytesLike
-  ): Result;
 }
 
-export interface MockContract extends BaseContract {
-  connect(runner?: ContractRunner | null): MockContract;
+export interface MockWithCallInterface extends BaseContract {
+  connect(runner?: ContractRunner | null): MockWithCallInterface;
   waitForDeployment(): Promise<this>;
 
-  interface: MockContractInterface;
+  interface: MockWithCallInterfaceInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -365,15 +329,17 @@ export interface MockContract extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  DEFAULT_FALLBACK_VALUE: TypedContractMethod<[], [string], "view">;
+  executeCallViaMock: TypedContractMethod<
+    [to: AddressLike, value: BigNumberish, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
 
-  MOCKS_LIST_END: TypedContractMethod<[], [string], "view">;
-
-  MOCKS_LIST_END_HASH: TypedContractMethod<[], [string], "view">;
-
-  MOCKS_LIST_START: TypedContractMethod<[], [string], "view">;
-
-  SENTINEL_ANY_MOCKS: TypedContractMethod<[], [string], "view">;
+  executeDelegatecallViaMock: TypedContractMethod<
+    [to: AddressLike, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
 
   givenAnyReturn: TypedContractMethod<
     [response: BytesLike],
@@ -458,94 +424,87 @@ export interface MockContract extends BaseContract {
   >;
 
   givenMethodReturn: TypedContractMethod<
-    [call: BytesLike, response: BytesLike],
+    [method: BytesLike, response: BytesLike],
     [void],
     "nonpayable"
   >;
 
   givenMethodReturnAddress: TypedContractMethod<
-    [call: BytesLike, response: AddressLike],
+    [method: BytesLike, response: AddressLike],
     [void],
     "nonpayable"
   >;
 
   givenMethodReturnBool: TypedContractMethod<
-    [call: BytesLike, response: boolean],
+    [method: BytesLike, response: boolean],
     [void],
     "nonpayable"
   >;
 
   givenMethodReturnBytes32: TypedContractMethod<
-    [call: BytesLike, response: BytesLike],
+    [method: BytesLike, response: BytesLike],
     [void],
     "nonpayable"
   >;
 
   givenMethodReturnUint: TypedContractMethod<
-    [call: BytesLike, response: BigNumberish],
+    [method: BytesLike, response: BigNumberish],
     [void],
     "nonpayable"
   >;
 
   givenMethodRevert: TypedContractMethod<
-    [call: BytesLike],
+    [method: BytesLike],
     [void],
     "nonpayable"
   >;
 
   givenMethodRevertWithMessage: TypedContractMethod<
-    [call: BytesLike, message: string],
+    [method: BytesLike, message: string],
     [void],
     "nonpayable"
   >;
 
   givenMethodRunOutOfGas: TypedContractMethod<
-    [call: BytesLike],
+    [method: BytesLike],
     [void],
     "nonpayable"
   >;
 
-  invocationCount: TypedContractMethod<[], [bigint], "view">;
+  invocationCount: TypedContractMethod<[], [bigint], "nonpayable">;
 
   invocationCountForCalldata: TypedContractMethod<
     [call: BytesLike],
     [bigint],
-    "view"
+    "nonpayable"
   >;
 
   invocationCountForMethod: TypedContractMethod<
-    [call: BytesLike],
+    [method: BytesLike],
     [bigint],
-    "view"
+    "nonpayable"
   >;
 
   reset: TypedContractMethod<[], [void], "nonpayable">;
-
-  updateInvocationCount: TypedContractMethod<
-    [methodId: BytesLike, originalMsgData: BytesLike],
-    [void],
-    "nonpayable"
-  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "DEFAULT_FALLBACK_VALUE"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "executeCallViaMock"
+  ): TypedContractMethod<
+    [to: AddressLike, value: BigNumberish, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
   getFunction(
-    nameOrSignature: "MOCKS_LIST_END"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "MOCKS_LIST_END_HASH"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "MOCKS_LIST_START"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "SENTINEL_ANY_MOCKS"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "executeDelegatecallViaMock"
+  ): TypedContractMethod<
+    [to: AddressLike, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "givenAnyReturn"
   ): TypedContractMethod<[response: BytesLike], [void], "nonpayable">;
@@ -618,70 +577,63 @@ export interface MockContract extends BaseContract {
   getFunction(
     nameOrSignature: "givenMethodReturn"
   ): TypedContractMethod<
-    [call: BytesLike, response: BytesLike],
+    [method: BytesLike, response: BytesLike],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "givenMethodReturnAddress"
   ): TypedContractMethod<
-    [call: BytesLike, response: AddressLike],
+    [method: BytesLike, response: AddressLike],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "givenMethodReturnBool"
   ): TypedContractMethod<
-    [call: BytesLike, response: boolean],
+    [method: BytesLike, response: boolean],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "givenMethodReturnBytes32"
   ): TypedContractMethod<
-    [call: BytesLike, response: BytesLike],
+    [method: BytesLike, response: BytesLike],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "givenMethodReturnUint"
   ): TypedContractMethod<
-    [call: BytesLike, response: BigNumberish],
+    [method: BytesLike, response: BigNumberish],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "givenMethodRevert"
-  ): TypedContractMethod<[call: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<[method: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "givenMethodRevertWithMessage"
   ): TypedContractMethod<
-    [call: BytesLike, message: string],
+    [method: BytesLike, message: string],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "givenMethodRunOutOfGas"
-  ): TypedContractMethod<[call: BytesLike], [void], "nonpayable">;
+  ): TypedContractMethod<[method: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "invocationCount"
-  ): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<[], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "invocationCountForCalldata"
-  ): TypedContractMethod<[call: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<[call: BytesLike], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "invocationCountForMethod"
-  ): TypedContractMethod<[call: BytesLike], [bigint], "view">;
+  ): TypedContractMethod<[method: BytesLike], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "reset"
   ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "updateInvocationCount"
-  ): TypedContractMethod<
-    [methodId: BytesLike, originalMsgData: BytesLike],
-    [void],
-    "nonpayable"
-  >;
 
   filters: {};
 }

@@ -445,47 +445,4 @@ describe("MockContract", function () {
       expect(await complexInterface.acceptUintReturnUintView(0)).equal(7)
     });
   });
-
-  describe("execute calls via mocks", function () {
-
-    it("should not allow non-deployer to execute delegatecall", async function () {
-      const { mockContract , signers} = await setupTests();
-      const otherMockContract = await ethers.deployContract("MockContract");
-
-      await  expect(mockContract.connect(signers[1]).executeDelegatecallViaMock(otherMockContract.target, "0x12345678", MaxUint256)).to.be.revertedWith("Only deployer can call executeDelegatecallViaMock");
-
-      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(0);
-      expect(await otherMockContract.invocationCount()).to.be.equal(0);
-    });
-
-    it("should not allow non-deployer to execute call", async function () {
-      const { mockContract , signers} = await setupTests();
-      const otherMockContract = await ethers.deployContract("MockContract");
-
-      await  expect(mockContract.connect(signers[1]).executeCallViaMock(otherMockContract.target,0, "0x12345678", MaxUint256)).to.be.revertedWith("Only deployer can call executeCallViaMock");
-
-      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(0);
-      expect(await otherMockContract.invocationCount()).to.be.equal(0);
-    });
-
-    it("should execute call via mock", async function () {
-      const { mockContract } = await setupTests();
-
-      const otherMockContract = await ethers.deployContract("MockContract");
-
-      await mockContract.executeCallViaMock(otherMockContract.target, 0, "0x12345678", MaxUint256);
-      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(1);
-      expect(await otherMockContract.invocationCount()).to.be.equal(1);
-    });
-
-    it("should execute delegatecall via mock", async function () {
-      const { mockContract } = await setupTests();
-      const otherMockContract = await ethers.deployContract("MockContract");
-
-      await mockContract.executeDelegatecallViaMock(otherMockContract.target, "0x12345678", MaxUint256);
-
-      expect(await otherMockContract.invocationCountForCalldata("0x12345678")).to.be.equal(0);
-      expect(await otherMockContract.invocationCount()).to.be.equal(0);
-    });
-  });
 });

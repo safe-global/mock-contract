@@ -29,6 +29,14 @@ declare module "hardhat/types/runtime" {
       name: "MockInterface",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockInterface__factory>;
+    getContractFactory(
+      name: "MockContractWithCall",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockContractWithCall__factory>;
+    getContractFactory(
+      name: "MockWithCallInterface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockWithCallInterface__factory>;
 
     getContractAt(
       name: "ComplexInterface",
@@ -50,6 +58,16 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.MockInterface>;
+    getContractAt(
+      name: "MockContractWithCall",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockContractWithCall>;
+    getContractAt(
+      name: "MockWithCallInterface",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockWithCallInterface>;
 
     deployContract(
       name: "ComplexInterface",
@@ -67,6 +85,14 @@ declare module "hardhat/types/runtime" {
       name: "MockInterface",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockInterface>;
+    deployContract(
+      name: "MockContractWithCall",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockContractWithCall>;
+    deployContract(
+      name: "MockWithCallInterface",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockWithCallInterface>;
 
     deployContract(
       name: "ComplexInterface",
@@ -88,6 +114,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockInterface>;
+    deployContract(
+      name: "MockContractWithCall",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockContractWithCall>;
+    deployContract(
+      name: "MockWithCallInterface",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockWithCallInterface>;
 
     // default types
     getContractFactory(

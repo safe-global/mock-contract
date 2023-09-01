@@ -23,7 +23,7 @@ import type {
   Listener,
 } from "ethers";
 
-export interface MockContractInterface extends Interface {
+export interface MockContractWithCallInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "DEFAULT_FALLBACK_VALUE"
@@ -31,6 +31,8 @@ export interface MockContractInterface extends Interface {
       | "MOCKS_LIST_END_HASH"
       | "MOCKS_LIST_START"
       | "SENTINEL_ANY_MOCKS"
+      | "executeCallViaMock"
+      | "executeDelegatecallViaMock"
       | "givenAnyReturn"
       | "givenAnyReturnAddress"
       | "givenAnyReturnBool"
@@ -80,6 +82,14 @@ export interface MockContractInterface extends Interface {
   encodeFunctionData(
     functionFragment: "SENTINEL_ANY_MOCKS",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "executeCallViaMock",
+    values: [AddressLike, BigNumberish, BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "executeDelegatecallViaMock",
+    values: [AddressLike, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "givenAnyReturn",
@@ -212,6 +222,14 @@ export interface MockContractInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "executeCallViaMock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "executeDelegatecallViaMock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "givenAnyReturn",
     data: BytesLike
   ): Result;
@@ -322,11 +340,11 @@ export interface MockContractInterface extends Interface {
   ): Result;
 }
 
-export interface MockContract extends BaseContract {
-  connect(runner?: ContractRunner | null): MockContract;
+export interface MockContractWithCall extends BaseContract {
+  connect(runner?: ContractRunner | null): MockContractWithCall;
   waitForDeployment(): Promise<this>;
 
-  interface: MockContractInterface;
+  interface: MockContractWithCallInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -374,6 +392,18 @@ export interface MockContract extends BaseContract {
   MOCKS_LIST_START: TypedContractMethod<[], [string], "view">;
 
   SENTINEL_ANY_MOCKS: TypedContractMethod<[], [string], "view">;
+
+  executeCallViaMock: TypedContractMethod<
+    [to: AddressLike, value: BigNumberish, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
+
+  executeDelegatecallViaMock: TypedContractMethod<
+    [to: AddressLike, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
 
   givenAnyReturn: TypedContractMethod<
     [response: BytesLike],
@@ -546,6 +576,20 @@ export interface MockContract extends BaseContract {
   getFunction(
     nameOrSignature: "SENTINEL_ANY_MOCKS"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "executeCallViaMock"
+  ): TypedContractMethod<
+    [to: AddressLike, value: BigNumberish, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "executeDelegatecallViaMock"
+  ): TypedContractMethod<
+    [to: AddressLike, data: BytesLike, gas: BigNumberish],
+    [[boolean, string] & { success: boolean; response: string }],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "givenAnyReturn"
   ): TypedContractMethod<[response: BytesLike], [void], "nonpayable">;

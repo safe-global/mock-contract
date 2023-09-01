@@ -106,12 +106,10 @@ contract MockContract is MockInterface {
 	string fallbackRevertMessage;
 	uint invocations;
 	uint resetCount;
-	address public immutable deployer;
 
 	constructor() {
 		calldataMocks[MOCKS_LIST_START] = MOCKS_LIST_END;
 		methodIdMocks[SENTINEL_ANY_MOCKS] = SENTINEL_ANY_MOCKS;
-		deployer = msg.sender;
 	}
 
 	function trackCalldataMock(bytes memory call) private {
@@ -387,43 +385,5 @@ contract MockContract is MockInterface {
 		assembly {
 			return(add(0x20, result), mload(result))
 		}
-	}
-
-	/**
-	 * @notice This function is used to call a function on a contract via the mock contract. Only deployer can call this function to avoid calls being executed unintentionally
-	 *		 when a function with same selector is called as this.
-	 * @param to Address of the contract to call
-	 * @param value Amount of ether to send
-	 * @param data Input bytes to send
-	 * @param gas Amount to gas to send
-	 * @return success Bool indicating if call was successful
-	 * @return response Bytes returned from the call
-	 */
-	function executeCallViaMock(
-		address payable to,
-		uint256 value,
-		bytes memory data,
-		uint256 gas
-	) external returns (bool success, bytes memory response) {
-		if(msg.sender != deployer) revert("Only deployer can call executeCallViaMock");
-		(success, response) = to.call{ value: value, gas: gas }(data);
-	}
-
-	/**
-	 * @notice This function is used to execute delegatecall to a contract via the mock contract. Only deployer can call this function to avoid calls being executed unintentionally
-	 *		 when a function with same selector is called as this.
-	 * @param to Address of the contract to execute delegatecall
-	 * @param data Input bytes to send
-	 * @param gas Amount to gas to send
-	 * @return success Bool indicating if call was successful
-	 * @return response Bytes returned from the call
-	 */
-	function executeDelegatecallViaMock(
-		address payable to,
-		bytes memory data,
-		uint256 gas
-	) external returns (bool success, bytes memory response) {
-		if(msg.sender != deployer) revert("Only deployer can call executeDelegatecallViaMock");
-		(success, response) = to.delegatecall{ gas: gas }(data);
 	}
 }
