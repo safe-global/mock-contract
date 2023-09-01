@@ -3,7 +3,7 @@ import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { deployContractUnderTest, deployMockContractFixture } from "./fixtures";
 import { expect } from "chai";
-import { ZeroAddress, FunctionFragment, MaxUint256 } from "ethers";
+import { ZeroAddress, Fragment, FunctionFragment } from "ethers";
 import { ComplexInterface, MockContract } from "../types";
 
 describe("MockContract", function () {
@@ -445,4 +445,5 @@ describe("MockContract", function () {
       expect(await complexInterface.acceptUintReturnUintView(0)).equal(7)
     });
   });
+
 });
