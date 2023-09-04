@@ -446,4 +446,4 @@ describe("MockContract", function () {
     });
   });
 
-})
+});

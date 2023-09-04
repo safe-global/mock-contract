@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as mockContractSol from "./MockContract.sol";
+export * as mockContractWithCallSol from "./MockContractWithCall.sol";
 export { ComplexInterface__factory } from "./ComplexInterface__factory";
 export { ExampleContractUnderTest__factory } from "./ExampleContractUnderTest__factory";

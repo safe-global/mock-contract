@@ -4,8 +4,11 @@
 
 /* eslint-disable */
 import type * as mockContractSol from "./MockContract.sol";
+import type * as mockContractWithCallSol from "./MockContractWithCall.sol";
 
 export type { mockContractSol };
+
+export type { mockContractWithCallSol };
 export type { ComplexInterface } from "./ComplexInterface";
 export type { ExampleContractUnderTest } from "./ExampleContractUnderTest";
 export * as factories from "./factories";
@@ -15,3 +18,7 @@ export type { MockContract } from "./MockContract.sol/MockContract";
 export { MockContract__factory } from "./factories/MockContract.sol/MockContract__factory";
 export type { MockInterface } from "./MockContract.sol/MockInterface";
 export { MockInterface__factory } from "./factories/MockContract.sol/MockInterface__factory";
+export type { MockContractWithCall } from "./MockContractWithCall.sol/MockContractWithCall";
+export { MockContractWithCall__factory } from "./factories/MockContractWithCall.sol/MockContractWithCall__factory";
+export type { MockWithCallInterface } from "./MockContractWithCall.sol/MockWithCallInterface";
+export { MockWithCallInterface__factory } from "./factories/MockContractWithCall.sol/MockWithCallInterface__factory";
