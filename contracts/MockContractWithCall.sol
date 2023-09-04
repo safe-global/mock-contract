@@ -25,8 +25,7 @@ interface MockWithCallInterface is MockInterface {
 contract MockContractWithCall is MockWithCallInterface, MockContract {
 
 	/**
-	 * @notice This function is used to call a function on a contract via the mock contract. Only deployer can call this function to avoid calls being executed unintentionally
-	 *		 when a function with same selector is called as this.
+	 * @notice This function is used to call a function on a contract via the mock contract.
 	 * @param to Address of the contract to call
 	 * @param value Amount of ether to send
 	 * @param data Input bytes to send
@@ -44,8 +43,7 @@ contract MockContractWithCall is MockWithCallInterface, MockContract {
 	}
 
 	/**
-	 * @notice This function is used to execute delegatecall to a contract via the mock contract. Only deployer can call this function to avoid calls being executed unintentionally
-	 *		 when a function with same selector is called as this.
+	 * @notice This function is used to execute delegatecall to a contract via the mock contract.
 	 * @param to Address of the contract to execute delegatecall
 	 * @param data Input bytes to send
 	 * @param gas Amount to gas to send
