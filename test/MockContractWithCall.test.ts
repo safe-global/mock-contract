@@ -1,18 +1,19 @@
-import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { deployMockContractWithCallFixture } from "./fixtures";
 import { expect } from "chai";
 import { MaxUint256 } from "ethers";
+import { ethers } from "hardhat";
+
+import { deployMockContractWithCallFixture } from "./fixtures";
 
 describe("MockContractWithCall", function () {
   async function setupTests() {
     return loadFixture(async function setup() {
       const signers: SignerWithAddress[] = await ethers.getSigners();
-      const { mockContractWithCall } = await deployMockContractWithCallFixture(signers[0])
+      const { mockContractWithCall } = await deployMockContractWithCallFixture(signers[0]);
 
       return { mockContractWithCall };
-    })
+    });
   }
 
   describe("execute calls via mocks", function () {
