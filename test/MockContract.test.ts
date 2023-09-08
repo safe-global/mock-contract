@@ -1,7 +1,7 @@
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
-import { Fragment, FunctionFragment, ZeroAddress } from "ethers";
+import { FunctionFragment, ZeroAddress } from "ethers";
 import { ethers } from "hardhat";
 
 import { ComplexInterface, MockContract } from "../types";

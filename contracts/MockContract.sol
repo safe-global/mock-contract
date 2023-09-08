@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.4 <0.9.0;
 
 interface MockInterface {
     /**
@@ -28,7 +28,8 @@ interface MockInterface {
      * methodId is called regardless of arguments. If the methodId and arguments
      * are mocked more specifically (using `givenMethodAndArguments`) the latter
      * will take precedence.
-     * @param method ABI encoded methodId. It is valid to pass full calldata (including arguments). The mock will extract the methodId from it
+     * @param method ABI encoded methodId. It is valid to pass full calldata (including arguments).
+     *        The mock will extract the methodId from it
      * @param response ABI encoded response that will be returned if method is invoked
      */
     function givenMethodReturn(bytes calldata method, bytes calldata response) external;
@@ -77,7 +78,8 @@ interface MockInterface {
 
     /**
      * @dev Returns the number of times the given method has been called on this mock since last reset
-     * @param method ABI encoded methodId. It is valid to pass full calldata (including arguments). The mock will extract the methodId from it
+     * @param method ABI encoded methodId. It is valid to pass full calldata (including arguments).
+     *        The mock will extract the methodId from it.
      */
     function invocationCountForMethod(bytes calldata method) external returns (uint);
 
@@ -360,6 +362,16 @@ contract MockContract is MockInterface {
         calldataInvocations[keccak256(abi.encodePacked(resetCount, originalMsgData))] += 1;
     }
 
+    function checkExactMatchingOverrides() private {
+        // First, check exact matching overrides
+        if (calldataMockTypes[msg.data] == MockType.Revert) {
+            revert(calldataRevertMessage[msg.data]);
+        }
+        if (calldataMockTypes[msg.data] == MockType.OutOfGas) {
+            useAllGas();
+        }
+    }
+
     receive() external payable {
         fallbackImpl();
     }
@@ -371,13 +383,7 @@ contract MockContract is MockInterface {
     function fallbackImpl() internal {
         bytes4 methodId = msg.sig;
 
-        // First, check exact matching overrides
-        if (calldataMockTypes[msg.data] == MockType.Revert) {
-            revert(calldataRevertMessage[msg.data]);
-        }
-        if (calldataMockTypes[msg.data] == MockType.OutOfGas) {
-            useAllGas();
-        }
+        checkExactMatchingOverrides();
         bytes memory result = calldataExpectations[msg.data];
 
         // Then check method Id overrides
